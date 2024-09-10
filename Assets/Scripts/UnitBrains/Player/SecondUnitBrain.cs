@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Model.Runtime.Projectiles;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace UnitBrains.Player
 {
@@ -43,9 +44,21 @@ namespace UnitBrains.Player
             // Homework 1.4 (1st block, 4rd module)
             ///////////////////////////////////////
             List<Vector2Int> result = GetReachableTargets();
-            while (result.Count > 1)
+            float MinDistances = float.MaxValue;
+            if (result.Count > 0)
             {
-                result.RemoveAt(result.Count - 1);
+                var MinDistancesObject = result[0];
+                foreach (var target in result)
+                {
+                    var TmpDistansToBase = DistanceToOwnBase(target);
+                    if (TmpDistansToBase < MinDistances)
+                    {
+                        MinDistances = TmpDistansToBase;
+                        MinDistancesObject = target;
+                    }
+                }
+                result.Clear();
+                result.Add(MinDistancesObject);
             }
             return result;
             ///////////////////////////////////////
