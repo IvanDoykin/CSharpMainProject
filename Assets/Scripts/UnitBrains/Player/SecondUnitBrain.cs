@@ -53,6 +53,7 @@ namespace UnitBrains.Player
                 return unit.Pos.CalcNextStepTowards(TargetList[0]);
             }
             return unit.Pos;
+            
         }
 
         protected override List<Vector2Int> SelectTargets()
@@ -64,7 +65,6 @@ namespace UnitBrains.Player
             List<Vector2Int> AllReachableTargets = GetReachableTargets();
             int _TurgetNumber = UnitNumber < MaxTargets ? UnitNumber: UnitNumber % MaxTargets;
             Vector2Int Tmp;
-
             TargetList.Clear();
             if (result.Count == 0)
             {
@@ -78,7 +78,10 @@ namespace UnitBrains.Player
             {
                 SortByDistanceToOwnBase(result);
                 if (AllReachableTargets.Count == 0)
+                {
                     TargetList.Add((result.Count - 1) < _TurgetNumber ? result[0] : result[_TurgetNumber]);
+                    result.Clear();
+                }
                 else
                 {
                     Tmp = ((AllReachableTargets.Count - 1) < _TurgetNumber ? result[0] : result[_TurgetNumber]);
