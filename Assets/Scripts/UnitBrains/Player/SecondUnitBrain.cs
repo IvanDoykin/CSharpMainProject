@@ -17,6 +17,15 @@ namespace UnitBrains.Player
         private float _cooldownTime = 0f;
         private bool _overheated;
         private List<Vector2Int> TargetList = new List<Vector2Int>();
+        private static int counter =0;
+        private int UnitNumber;
+        private const int MaxTargets = 3;
+
+        public SecondUnitBrain()
+        {
+            UnitNumber = counter;
+            counter++;
+        }
 
         protected override void GenerateProjectiles(Vector2Int forTarget, List<BaseProjectile> intoList)
         {  
@@ -52,39 +61,36 @@ namespace UnitBrains.Player
             // Homework 1.4 (1st block, 4rd module)
             ///////////////////////////////////////
             List<Vector2Int> result = GetAllTargets().ToList();
-            List<Vector2Int> NextStepList = new List<Vector2Int>();
-            float MinDistances = float.MaxValue;
-            
-            if (result.Count > 0)
-            {
-                Vector2Int MinDistancesObject = result[0];
-                foreach (Vector2Int target in result)
-                {
-                    float TmpDistansToBase = DistanceToOwnBase(target);
-                    if (TmpDistansToBase < MinDistances)
-                    {
-                        MinDistances = TmpDistansToBase;
-                        MinDistancesObject = target;
-                    }
-                }
-                
-                result.Clear();
-                TargetList.Clear();
-                if (IsTargetInRange(MinDistancesObject))    
-                    result.Add(MinDistancesObject);
-                else
-                    TargetList.Add(MinDistancesObject);
-                
-            }
-            else
+            List<Vector2Int> AllReachableTargets = GetReachableTargets();
+            int _TurgetNumber = UnitNumber < MaxTargets ? UnitNumber: UnitNumber % MaxTargets;
+            Vector2Int Tmp;
+
+            if (result.Count == 0)
             {
                 TargetList.Clear();
                 Vector2Int enemyBase = runtimeModel.RoMap.Bases[IsPlayerUnitBrain ? RuntimeModel.PlayerId : RuntimeModel.BotPlayerId];
-                TargetList.Add(enemyBase); 
+                if (IsTargetInRange(enemyBase))
+                    result.Add(enemyBase);
+                else
+                    TargetList.Add(enemyBase);
+
+            }
+            else
+            {
+                SortByDistanceToOwnBase(result);
+                if (AllReachableTargets.Count == 0)
+                    TargetList.Add((result.Count - 1) < _TurgetNumber ? result[0] : result[_TurgetNumber]);
+                else
+                {
+                    Tmp = ((AllReachableTargets.Count - 1) < _TurgetNumber ? result[0] : result[_TurgetNumber]);
+                    result.Clear();
+                    result.Add(Tmp);
+                }
             }
             return result;
             ///////////////////////////////////////
         }
+        
 
         public override void Update(float deltaTime, float time)
         {
