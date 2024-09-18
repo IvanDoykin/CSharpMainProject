@@ -65,15 +65,14 @@ namespace UnitBrains.Player
             int _TurgetNumber = UnitNumber < MaxTargets ? UnitNumber: UnitNumber % MaxTargets;
             Vector2Int Tmp;
 
+            TargetList.Clear();
             if (result.Count == 0)
             {
-                TargetList.Clear();
-                Vector2Int enemyBase = runtimeModel.RoMap.Bases[IsPlayerUnitBrain ? RuntimeModel.PlayerId : RuntimeModel.BotPlayerId];
+                Vector2Int enemyBase = runtimeModel.RoMap.Bases[IsPlayerUnitBrain ? RuntimeModel.BotPlayerId : RuntimeModel.PlayerId];
                 if (IsTargetInRange(enemyBase))
                     result.Add(enemyBase);
                 else
                     TargetList.Add(enemyBase);
-
             }
             else
             {
@@ -88,7 +87,7 @@ namespace UnitBrains.Player
                 }
             }
             return result;
-            ///////////////////////////////////////
+            //////////////////////  /////////////////
         }
         
 
