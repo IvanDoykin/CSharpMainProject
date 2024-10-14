@@ -46,15 +46,15 @@ namespace UnitBrains.Player
             ///////////////////////////////////////
         }
 
-        public override Vector2Int GetNextStep()
-        {
-            if (TargetList.Count > 0)
-            {
-                return unit.Pos.CalcNextStepTowards(TargetList[0]);
-            }
-            return unit.Pos;
+        //public override Vector2Int GetNextStep()
+        //{
+        //    if (TargetList.Count > 0)
+        //    {
+        //        return unit.Pos.CalcNextStepTowards(TargetList[0]);
+        //    }
+        //    return unit.Pos;
             
-        }
+        //}
 
         protected override List<Vector2Int> SelectTargets()
         {

@@ -81,7 +81,6 @@ namespace UnitBrains.Player
                 _freezingTimer = _freezingTime;
             }
             base.Update(deltaTime, time);
-            Debug.Log($"{NowUnitAction} {LastUnitAction} {_freezing} {_freezingTimer}");
         }
     }
 }
