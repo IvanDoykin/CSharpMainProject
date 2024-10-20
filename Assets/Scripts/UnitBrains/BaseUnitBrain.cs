@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Pathfinding;
 using Assets.Scripts.UnitBrains;
 using Model;
 using Model.Runtime.Projectiles;
@@ -40,7 +41,7 @@ namespace UnitBrains
             var target = runtimeModel.RoMap.Bases[
                 IsPlayerUnitBrain ? RuntimeModel.BotPlayerId : RuntimeModel.PlayerId];
 
-            _activePath = new MyUnitBrain(runtimeModel, unit.Pos, target, IsPlayerUnitBrain);
+            _activePath = new MyUnitPath(runtimeModel, unit.Pos, target, IsPlayerUnitBrain);
             return _activePath.GetNextStepFrom(unit.Pos);
         }
 

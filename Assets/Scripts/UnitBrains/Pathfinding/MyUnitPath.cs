@@ -1,4 +1,4 @@
-﻿using Model;
+﻿﻿using Model;
 using Model.Runtime.ReadOnly;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 using UnitBrains.Pathfinding;
 using UnityEngine;
 
-namespace Assets.Scripts.UnitBrains
+namespace Assets.Scripts.Pathfinding
 {
-    public class MyUnitBrain : BaseUnitPath
+    public class MyUnitPath : BaseUnitPath
     {
 
         private readonly int[] cord = { 1, 0, -1, 0 };
@@ -20,10 +20,10 @@ namespace Assets.Scripts.UnitBrains
         PathAStar EmdPath;
         bool IsPlayerUnitBrain;
 
-        public MyUnitBrain(IReadOnlyRuntimeModel runtimeModel, Vector2Int startPoint, Vector2Int endPoint, bool _isPlayerUnitBrain) : base(runtimeModel, startPoint, endPoint) 
-        { 
-        IsPlayerUnitBrain = _isPlayerUnitBrain;
-        } 
+        public MyUnitPath(IReadOnlyRuntimeModel runtimeModel, Vector2Int startPoint, Vector2Int endPoint, bool _isPlayerUnitBrain) : base(runtimeModel, startPoint, endPoint)
+        {
+            IsPlayerUnitBrain = _isPlayerUnitBrain;
+        }
         protected override void Calculate()
         {
             var pathresult = GetAStarPath();
@@ -37,8 +37,8 @@ namespace Assets.Scripts.UnitBrains
             }
 
         }
-           
-        
+
+
         public List<Vector2Int> GetAStarPath()
         {
             List<Vector2Int> pathresult;
@@ -54,7 +54,7 @@ namespace Assets.Scripts.UnitBrains
 
         private void CalculAStarPath()
         {
-            var current_startPoint= startPoint;
+            var current_startPoint = startPoint;
             PathAStar PathAStarPath = new PathAStar(runtimeModel, current_startPoint, endPoint, null, 0);
             PathAStarPath.FullValue = 0;
             List<PathAStar> closed = new List<PathAStar>();
@@ -101,7 +101,7 @@ namespace Assets.Scripts.UnitBrains
                     EmdPath = PathAStarPath;
                     break;
                 }
-                
+
             }
         }
         protected class PathAStar
@@ -116,7 +116,7 @@ namespace Assets.Scripts.UnitBrains
             {
                 runtimeModel = _runtimeModel;
                 Value = value;
-                ToTargetValue = Math.Abs(current_startPoint.x - endPoint.x)+ Math.Abs(current_startPoint.y - endPoint.y);
+                ToTargetValue = Math.Abs(current_startPoint.x - endPoint.x) + Math.Abs(current_startPoint.y - endPoint.y);
                 Parent = parent;
                 MyPoint = new Vector2Int(current_startPoint.x, current_startPoint.y);
             }
@@ -151,7 +151,7 @@ namespace Assets.Scripts.UnitBrains
                 list.Reverse();
                 return list;
             }
-        
+
         }
     }
 
