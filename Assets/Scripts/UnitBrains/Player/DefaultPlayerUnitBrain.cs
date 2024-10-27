@@ -31,23 +31,20 @@ namespace UnitBrains.Player
             if (HasTargetsInRange())
                 return unit.Pos;
 
-            SingletonForUnitCoordination coordinator = SingletonForUnitCoordination.GetInstance();
+            UnitsCoordinator coordinator = unit.Coordinator;
             MyUnitPath _activePath;
 
             Vector2Int preferredTarget = coordinator.PreferredTargetForPlayer;
             Vector2Int preferredPos = coordinator.PreferredPosForPlayer;
-    
-            if (coordinator.DoPreferredStep(unit, preferredTarget) && preferredTarget!=Vector2Int.zero)
+
+            if (coordinator.DoPreferredStep(unit, preferredTarget) && preferredTarget != Vector2Int.zero)
             {
                 _activePath = new MyUnitPath(runtimeModel, unit.Pos, preferredTarget, IsPlayerUnitBrain);
-                Debug.Log(1);
-                Debug.Log(preferredTarget);
                 return _activePath.GetNextStepFrom(unit.Pos);
             }
-            Debug.Log(2);
-            Debug.Log(preferredPos);
             _activePath = new MyUnitPath(runtimeModel, unit.Pos, preferredPos, IsPlayerUnitBrain);
             return _activePath.GetNextStepFrom(unit.Pos);
+                
         }
         
 

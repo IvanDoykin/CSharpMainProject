@@ -14,12 +14,12 @@ using static UnityEngine.GraphicsBuffer;
 
 namespace Assets.Scripts.UnitBrains
 {
-    public class SingletonForUnitCoordination
+    public class UnitsCoordinator
     {
         IReadOnlyRuntimeModel _runtimeModel => ServiceLocator.Get<IReadOnlyRuntimeModel>();
         TimeUtil _timeUtil => ServiceLocator.Get<TimeUtil>();
         private Action<float> _updateAction;
-        private static SingletonForUnitCoordination _instance = new SingletonForUnitCoordination();
+        private static UnitsCoordinator _instance = new UnitsCoordinator();
         private List<IReadOnlyUnit> _unitsPlayer;
         private List<IReadOnlyUnit> _unitsEnemy;
 
@@ -32,37 +32,33 @@ namespace Assets.Scripts.UnitBrains
         /// Я когда начинала решать подумала что надо сделать и для игрока и для бота такую механику, поэтому реализовано с учером этого ///
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        SingletonForUnitCoordination()
+        public UnitsCoordinator()
         {
             _timeUtil.AddFixedUpdateAction(Update);
         }
 
-        public static SingletonForUnitCoordination GetInstance()
-        {
-            if (null == _instance)
-            {
-                _instance = new SingletonForUnitCoordination();
-            }
-            return _instance;
-        }
-        ~SingletonForUnitCoordination()
+        ~UnitsCoordinator()
         {
             _timeUtil.RemoveUpdateAction(Update);
         }
-
         private void Update(float deltaTime)
         {
             _unitsEnemy = _runtimeModel.RoBotUnits.ToList();
             _unitsPlayer = _runtimeModel.RoPlayerUnits.ToList();
             ChangeAllPreferrnces();
         }
-        private void ChangeAllPreferrnces() 
+        private void ChangeAllPreferrnces()
         {
-            PreferredPosForEnemy = GetPreferredPos(false);
-            PreferredTargetForEnemy = GetPreferredTarget(false);
-
-            PreferredPosForPlayer = GetPreferredPos(true);
-            PreferredTargetForPlayer = GetPreferredTarget(true);
+            if (_unitsEnemy.Count > 0)
+            {
+                PreferredPosForEnemy = GetPreferredPos(false);
+                PreferredTargetForEnemy = GetPreferredTarget(false);
+            }
+            if (_unitsPlayer.Count > 0)
+            {
+                PreferredPosForPlayer = GetPreferredPos(true);
+                PreferredTargetForPlayer = GetPreferredTarget(true);
+            }
         }
 
         private Vector2Int GetPreferredTarget(bool IsPlayerUnit)
