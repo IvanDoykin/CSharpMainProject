@@ -22,11 +22,13 @@ namespace Model.Runtime
 
         private readonly List<BaseProjectile> _pendingProjectiles = new();
         private IReadOnlyRuntimeModel _runtimeModel;
+        protected EffectController _effects;
         private BaseUnitBrain _brain;
 
         private float _nextBrainUpdateTime = 0f;
         private float _nextMoveTime = 0f;
         private float _nextAttackTime = 0f;
+        private bool _takeEffectOnce = true; //Эта строчка добовляет эффект в начале(потом удалить)
 
         public UnitsCoordinator Coordinator;
         public Unit(UnitConfig config, Vector2Int startPos, UnitsCoordinator _coordinator)
@@ -38,13 +40,18 @@ namespace Model.Runtime
             _brain = UnitBrainProvider.GetBrain(config);
             _brain.SetUnit(this);
             _runtimeModel = ServiceLocator.Get<IReadOnlyRuntimeModel>();
+            _effects = ServiceLocator.Get<EffectController>();
         }
 
         public void Update(float deltaTime, float time)
         {
             if (IsDead)
                 return;
-            
+            if (_takeEffectOnce) //Эта строчка добовляет эффект в начале(потом удалить)
+            {
+                _effects.AddEffect(this, EffectController.TypesOfEffects.DelayForNextMoveTimeEffect, 5, 5);
+                _takeEffectOnce=false;
+            }
             if (_nextBrainUpdateTime < time)
             {
                 _nextBrainUpdateTime = time + Config.BrainUpdateInterval;
@@ -53,16 +60,15 @@ namespace Model.Runtime
             
             if (_nextMoveTime < time)
             {
-                _nextMoveTime = time + Config.MoveDelay;
+                _nextMoveTime = time + Config.MoveDelay * _effects.FindEffectMultiplier(this, EffectController.TypesOfEffects.DelayForNextMoveTimeEffect);
                 Move();
             }
             
             if (_nextAttackTime < time && Attack())
             {
-                _nextAttackTime = time + Config.AttackDelay;
+                _nextAttackTime = time + Config.AttackDelay * _effects.FindEffectMultiplier(this,EffectController.TypesOfEffects.DelayForNextAttackTimeEffect);
             }
         }
-
         private bool Attack()
         {
             var projectiles = _brain.GetProjectiles();
